@@ -26,7 +26,9 @@ func main() {
 		9, 10,
 	}
 
-	c := chain.New(len(tasks), chain.OptionStep(4))
+	c := chain.New()
+	c.SetStop(len(tasks))
+	c.SetStep(4)
 
 	var wg sync.WaitGroup
 
