@@ -26,18 +26,18 @@ func main() {
 		9, 10,
 	}
 
-	c := chain.New()
+	var wg sync.WaitGroup
+	var c chain.Chain
+
 	c.SetStop(len(tasks))
 	c.SetStep(4)
-
-	var wg sync.WaitGroup
 
 	for c.Next() {
 		left, right := c.Bounds()
 		subtasks := tasks[left:right]
 
 		wg.Add(1)
-		go performSubtasks(&wg, subtasks)
+		go performTasks(&wg, subtasks)
 	}
 
 	wg.Wait()
@@ -48,7 +48,7 @@ func main() {
 	// [1 2 3 4]
 }
 
-func performSubtasks(wg *sync.WaitGroup, subtasks []int) {
+func performTasks(wg *sync.WaitGroup, subtasks []int) {
 	fmt.Println(subtasks)
 	wg.Done()
 }

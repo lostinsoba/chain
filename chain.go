@@ -1,40 +1,11 @@
 package chain
 
-const (
-	DirectionForward = iota
-	DirectionBackward
-)
-
-const (
-	defaultStart = 0
-	defaultStop  = 0
-	defaultStep  = 0
-	defaultEnd   = 0
-)
-
 type Chain struct {
-	start     int
-	stop      int
-	step      int
-	end       int
-	direction int
-}
-
-func New() *Chain {
-	return &Chain{
-		start:     defaultStart,
-		stop:      defaultStop,
-		step:      defaultStep,
-		end:       defaultEnd,
-		direction: DirectionForward,
-	}
-}
-
-func (c *Chain) SetDirection(direction int) {
-	c.direction = direction
-	if c.isOnLastPosition() {
-		c.Reset()
-	}
+	start    int
+	stop     int
+	step     int
+	end      int
+	backward bool
 }
 
 func (c *Chain) SetStart(start int) {
@@ -54,8 +25,7 @@ func (c *Chain) Next() bool {
 }
 
 func (c *Chain) Bounds() (lb int, rb int) {
-	switch c.direction {
-	case DirectionForward:
+	if !c.backward {
 		c.end = c.start + c.step
 		if c.end > c.stop {
 			c.end = c.stop
@@ -65,7 +35,7 @@ func (c *Chain) Bounds() (lb int, rb int) {
 		if c.start > c.stop {
 			c.start = c.stop
 		}
-	case DirectionBackward:
+	} else {
 		c.end = c.start
 		c.start -= c.step
 		if c.start < 0 {
@@ -77,22 +47,25 @@ func (c *Chain) Bounds() (lb int, rb int) {
 }
 
 func (c *Chain) Reset() {
-	switch c.direction {
-	case DirectionForward:
-		c.start = defaultStart
-		c.end = defaultEnd
-	case DirectionBackward:
+	if !c.backward {
+		c.start = 0
+		c.end = 0
+	} else {
 		c.end = c.stop
 		c.start = c.stop
 	}
 }
 
-func (c *Chain) isOnLastPosition() bool {
-	switch c.direction {
-	case DirectionForward:
-		return c.end == c.stop
-	case DirectionBackward:
-		return c.start == defaultStart
+func (c *Chain) Reverse() {
+	c.backward = !c.backward
+	if c.isOnLastPosition() {
+		c.Reset()
 	}
-	return false
+}
+
+func (c *Chain) isOnLastPosition() bool {
+	if !c.backward {
+		return c.end == c.stop
+	}
+	return c.start == 0
 }

@@ -46,7 +46,7 @@ func TestChain_Next(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		c := New()
+		var c Chain
 		c.SetStart(testCase.start)
 		c.SetStep(testCase.step)
 		c.SetStop(testCase.stop)
@@ -65,7 +65,7 @@ func TestChain_Bounds(t *testing.T) {
 	alphabet := "abcdefghijklmnopqrstuvwxyz"
 
 	t.Run("forward", func(t *testing.T) {
-		c := New()
+		var c Chain
 		c.SetStop(len(alphabet))
 		c.SetStep(4)
 
@@ -91,10 +91,10 @@ func TestChain_Bounds(t *testing.T) {
 	})
 
 	t.Run("backward", func(t *testing.T) {
-		c := New()
+		var c Chain
 		c.SetStop(len(alphabet))
 		c.SetStep(4)
-		c.SetDirection(DirectionBackward)
+		c.Reverse()
 
 		expected := []string{
 			"wxyz",
@@ -118,10 +118,9 @@ func TestChain_Bounds(t *testing.T) {
 	})
 
 	t.Run("forward then backward", func(t *testing.T) {
-		c := New()
+		var c Chain
 		c.SetStop(len(alphabet))
 		c.SetStep(4)
-		c.SetDirection(DirectionForward)
 
 		expected := []string{
 			"abcd",
@@ -147,7 +146,7 @@ func TestChain_Bounds(t *testing.T) {
 			segment := alphabet[left:right]
 			actual = append(actual, segment)
 		}
-		c.SetDirection(DirectionBackward)
+		c.Reverse()
 		for c.Next() {
 			left, right := c.Bounds()
 			segment := alphabet[left:right]
@@ -158,10 +157,10 @@ func TestChain_Bounds(t *testing.T) {
 	})
 
 	t.Run("backward then forward", func(t *testing.T) {
-		c := New()
+		var c Chain
 		c.SetStop(len(alphabet))
 		c.SetStep(4)
-		c.SetDirection(DirectionBackward)
+		c.Reverse()
 
 		expected := []string{
 			"wxyz",
@@ -187,7 +186,7 @@ func TestChain_Bounds(t *testing.T) {
 			segment := alphabet[left:right]
 			actual = append(actual, segment)
 		}
-		c.SetDirection(DirectionForward)
+		c.Reverse()
 		for c.Next() {
 			left, right := c.Bounds()
 			segment := alphabet[left:right]
