@@ -1,9 +1,12 @@
-# Chain
+# chain [![Go Reference](https://pkg.go.dev/badge/github.com/lostinsoba/chain.svg)](https://pkg.go.dev/github.com/lostinsoba/chain)
+
+Lower and Upper Bounds Generator  
+It works like Python's [range()](https://docs.python.org/3/library/stdtypes.html#range) but returns only the first and last values
 
 ## Installation
 
 ```shell
-go get github.com/lostinsoba/chain
+go get -u github.com/lostinsoba/chain
 ```
 
 ## Usage
