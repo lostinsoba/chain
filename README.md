@@ -1,6 +1,8 @@
 # chain [![Go Reference](https://pkg.go.dev/badge/github.com/lostinsoba/chain.svg)](https://pkg.go.dev/github.com/lostinsoba/chain)
 
-Lower and Upper Bounds Generator  
+Lower and Upper Bounds Generator
+
+## Description
 
 It works like Python's [range()](https://docs.python.org/3/library/stdtypes.html#range)
 ```python
@@ -12,7 +14,7 @@ It works like Python's [range()](https://docs.python.org/3/library/stdtypes.html
 10
 ```
 
-but returns the first and last values for every iteration instead
+but returns the first and last values for every iteration instead:
 
 ```go
 var c chain.Chain
@@ -20,13 +22,27 @@ c.SetStop(15)
 c.SetStep(5)
 
 for c.Next() {
-	left, right := c.Bounds()
-	fmt.Println(left, right)
+    left, right := c.Bounds()
+    fmt.Println(left, right)
 }
 
 // 0 5
 // 5 10
 // 10 15
+```
+
+and it's also supports to iterate in the opposite direction:
+
+```go
+c.Reverse()
+for c.Next() {
+    left, right := c.Bounds()
+    fmt.Println(left, right)
+}
+
+// 10 15
+// 5 10
+// 0 5
 ```
 
 ## Installation
@@ -41,44 +57,44 @@ go get -u github.com/lostinsoba/chain
 package main
 
 import (
-	"fmt"
-	"sync"
+    "fmt"
+    "sync"
 
-	"github.com/lostinsoba/chain"
+    "github.com/lostinsoba/chain"
 )
 
 func main() {
 
-	tasks := []int{
-		1, 2, 3, 4,
-		5, 6, 7, 8,
-		9, 10,
-	}
+    tasks := []int{
+        1, 2, 3, 4,
+        5, 6, 7, 8,
+        9, 10,
+    }
 
-	var wg sync.WaitGroup
-	var c chain.Chain
+    var wg sync.WaitGroup
+    var c chain.Chain
 
-	c.SetStop(len(tasks))
-	c.SetStep(4)
+    c.SetStop(len(tasks))
+    c.SetStep(4)
 
-	for c.Next() {
-		left, right := c.Bounds()
-		subtasks := tasks[left:right]
+    for c.Next() {
+        left, right := c.Bounds()
+        subtasks := tasks[left:right]
 
-		wg.Add(1)
-		go performTasks(&wg, subtasks)
-	}
+        wg.Add(1)
+        go performTasks(&wg, subtasks)
+    }
 
-	wg.Wait()
+    wg.Wait()
 
-	// Output:
-	// [9 10]
-	// [5 6 7 8]
-	// [1 2 3 4]
+    // Output:
+    // [9 10]
+    // [5 6 7 8]
+    // [1 2 3 4]
 }
 
 func performTasks(wg *sync.WaitGroup, subtasks []int) {
-	fmt.Println(subtasks)
-	wg.Done()
+    fmt.Println(subtasks)
+    wg.Done()
 }
 ```
