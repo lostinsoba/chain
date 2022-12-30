@@ -1,5 +1,6 @@
 package chain
 
+// Chain is a lower and upper bounds generator
 type Chain struct {
 	start    int
 	stop     int
@@ -8,22 +9,27 @@ type Chain struct {
 	backward bool
 }
 
+// SetStart sets the start interval value
 func (c *Chain) SetStart(start int) {
 	c.start = start
 }
 
+// SetStop sets the maximum interval value
 func (c *Chain) SetStop(stop int) {
 	c.stop = stop
 }
 
+// SetStep sets the step value for every iteration
 func (c *Chain) SetStep(step int) {
 	c.step = step
 }
 
+// Next returns true or false whether there are any subintervals left
 func (c *Chain) Next() bool {
 	return !c.isOnLastPosition()
 }
 
+// Bounds returns the lower and upper bounds of current subinterval
 func (c *Chain) Bounds() (lb int, rb int) {
 	if !c.backward {
 		c.end = c.start + c.step
@@ -46,6 +52,7 @@ func (c *Chain) Bounds() (lb int, rb int) {
 	return
 }
 
+// Reset resets current start and end positions according to the chosen direction
 func (c *Chain) Reset() {
 	if !c.backward {
 		c.start = 0
@@ -56,6 +63,7 @@ func (c *Chain) Reset() {
 	}
 }
 
+// Reverse changes the direction to iterate
 func (c *Chain) Reverse() {
 	c.backward = !c.backward
 	if c.isOnLastPosition() {
