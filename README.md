@@ -31,7 +31,7 @@ for c.Next() {
 // 10 15
 ```
 
-and it's also supports to iterate in the opposite direction:
+and it's also possible to iterate in the opposite direction:
 
 ```go
 c.Reverse()
@@ -93,8 +93,8 @@ func main() {
     // [1 2 3 4]
 }
 
-func performTasks(wg *sync.WaitGroup, subtasks []int) {
-    fmt.Println(subtasks)
+func performTasks(wg *sync.WaitGroup, tasks []int) {
+    fmt.Println(tasks)
     wg.Done()
 }
 ```
