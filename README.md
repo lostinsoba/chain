@@ -1,7 +1,33 @@
 # chain [![Go Reference](https://pkg.go.dev/badge/github.com/lostinsoba/chain.svg)](https://pkg.go.dev/github.com/lostinsoba/chain)
 
 Lower and Upper Bounds Generator  
-It works like Python's [range()](https://docs.python.org/3/library/stdtypes.html#range) but returns only the first and last values
+
+It works like Python's [range()](https://docs.python.org/3/library/stdtypes.html#range)
+```python
+>>> for i in range(0, 15, 5):
+...     print(i)
+... 
+0
+5
+10
+```
+
+but returns the first and last values for every iteration instead
+
+```go
+var c chain.Chain
+c.SetStop(15)
+c.SetStep(5)
+
+for c.Next() {
+	left, right := c.Bounds()
+	fmt.Println(left, right)
+}
+
+// 0 5
+// 5 10
+// 10 15
+```
 
 ## Installation
 
