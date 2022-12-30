@@ -4,7 +4,7 @@ Lower and Upper Bounds Generator
 
 ## Description
 
-It works like Python's [range()](https://docs.python.org/3/library/stdtypes.html#range)
+It works like Python's [range()](https://docs.python.org/3/library/stdtypes.html#range) generator:
 ```python
 >>> for i in range(0, 15, 5):
 ...     print(i)
