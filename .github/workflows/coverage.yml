@@ -17,7 +17,7 @@ jobs:
       - name: install golang
         uses: actions/setup-go@v3
         with:
-          go-version: stable
+          go-version-file: go.mod
       - name: generate cover profile
         run: go test -coverprofile=coverage.out -covermode=atomic
       - name: upload cover profile to codecov
