@@ -1,4 +1,4 @@
-# chain [![Go Reference](https://pkg.go.dev/badge/github.com/lostinsoba/chain.svg)](https://pkg.go.dev/github.com/lostinsoba/chain) [![codecov](https://codecov.io/gh/lostinsoba/chain/graph/badge.svg)](https://codecov.io/gh/lostinsoba/chain)
+# chain [![Doc][doc-badge]][doc-uri] [![Coverage][coverage-badge]][coverage-uri]
 
 Lower and Upper Bounds Generator
 
@@ -98,3 +98,8 @@ func performTasks(wg *sync.WaitGroup, tasks []int) {
     wg.Done()
 }
 ```
+
+[doc-badge]: https://pkg.go.dev/badge/github.com/lostinsoba/chain.svg
+[doc-uri]: https://pkg.go.dev/github.com/lostinsoba/chain
+[coverage-badge]: https://codecov.io/gh/lostinsoba/chain/branch/main/graph/badge.svg
+[coverage-uri]: https://codecov.io/gh/lostinsoba/chain
