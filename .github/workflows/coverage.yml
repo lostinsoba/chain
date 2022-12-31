@@ -3,7 +3,10 @@ name: coverage
 on:
   push:
     branches:
-      - feature/coverage
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   coverage:
