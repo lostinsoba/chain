@@ -1,4 +1,4 @@
-# chain [![Go Reference](https://pkg.go.dev/badge/github.com/lostinsoba/chain.svg)](https://pkg.go.dev/github.com/lostinsoba/chain)
+# chain [![Go Reference](https://pkg.go.dev/badge/github.com/lostinsoba/chain.svg)](https://pkg.go.dev/github.com/lostinsoba/chain) [![codecov](https://codecov.io/gh/lostinsoba/chain/graph/badge.svg)](https://codecov.io/gh/lostinsoba/chain)
 
 Lower and Upper Bounds Generator
 
