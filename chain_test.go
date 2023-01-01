@@ -6,7 +6,6 @@ import (
 )
 
 func TestChain_Next(t *testing.T) {
-
 	testCases := []struct {
 		start    int
 		step     int
@@ -56,149 +55,172 @@ func TestChain_Next(t *testing.T) {
 			actual = append(actual, []int{left, right})
 		}
 
-		assertEqual(t, testCase.expected, actual)
+		assertEqual(t, t.Name(), testCase.expected, actual)
 	}
 }
 
 func TestChain_Bounds(t *testing.T) {
+	var (
+		alphabet = "abcdefghijklmnopqrstuvwxyz"
+		step     = 4
+	)
+	testCases := []struct {
+		name     string
+		loops    []int
+		expected []string
+	}{
+		{
+			name:  "forward",
+			loops: []int{1},
+			expected: []string{
+				"abcd",
+				"efgh",
+				"ijkl",
+				"mnop",
+				"qrst",
+				"uvwx",
+				"yz",
+			},
+		},
+		{
+			name:  "backward",
+			loops: []int{-1},
+			expected: []string{
+				"wxyz",
+				"stuv",
+				"opqr",
+				"klmn",
+				"ghij",
+				"cdef",
+				"ab",
+			},
+		},
+		{
+			name:  "forward then backward",
+			loops: []int{1, -1},
+			expected: []string{
+				"abcd",
+				"efgh",
+				"ijkl",
+				"mnop",
+				"qrst",
+				"uvwx",
+				"yz",
+				"wxyz",
+				"stuv",
+				"opqr",
+				"klmn",
+				"ghij",
+				"cdef",
+				"ab",
+			},
+		},
+		{
+			name:  "backward then forward",
+			loops: []int{-1, 1},
+			expected: []string{
+				"wxyz",
+				"stuv",
+				"opqr",
+				"klmn",
+				"ghij",
+				"cdef",
+				"ab",
+				"abcd",
+				"efgh",
+				"ijkl",
+				"mnop",
+				"qrst",
+				"uvwx",
+				"yz",
+			},
+		},
+	}
 
-	alphabet := "abcdefghijklmnopqrstuvwxyz"
-
-	t.Run("forward", func(t *testing.T) {
+	for _, testCase := range testCases {
 		var c Chain
 		c.SetStop(len(alphabet))
-		c.SetStep(4)
+		c.SetStep(step)
 
-		expected := []string{
-			"abcd",
-			"efgh",
-			"ijkl",
-			"mnop",
-			"qrst",
-			"uvwx",
-			"yz",
+		actual := make([]string, 0, len(testCase.expected))
+
+		var (
+			prevDirection int
+		)
+		for _, direction := range testCase.loops {
+			if direction == -1 || direction == -prevDirection {
+				c.Reverse()
+			}
+			prevDirection = direction
+
+			for c.Next() {
+				left, right := c.Bounds()
+				segment := alphabet[left:right]
+				actual = append(actual, segment)
+			}
 		}
 
-		actual := make([]string, 0, len(expected))
-
-		for c.Next() {
-			left, right := c.Bounds()
-			segment := alphabet[left:right]
-			actual = append(actual, segment)
-		}
-
-		assertEqual(t, expected, actual)
-	})
-
-	t.Run("backward", func(t *testing.T) {
-		var c Chain
-		c.SetStop(len(alphabet))
-		c.SetStep(4)
-		c.Reverse()
-
-		expected := []string{
-			"wxyz",
-			"stuv",
-			"opqr",
-			"klmn",
-			"ghij",
-			"cdef",
-			"ab",
-		}
-
-		actual := make([]string, 0, len(expected))
-
-		for c.Next() {
-			left, right := c.Bounds()
-			segment := alphabet[left:right]
-			actual = append(actual, segment)
-		}
-
-		assertEqual(t, expected, actual)
-	})
-
-	t.Run("forward then backward", func(t *testing.T) {
-		var c Chain
-		c.SetStop(len(alphabet))
-		c.SetStep(4)
-
-		expected := []string{
-			"abcd",
-			"efgh",
-			"ijkl",
-			"mnop",
-			"qrst",
-			"uvwx",
-			"yz",
-			"wxyz",
-			"stuv",
-			"opqr",
-			"klmn",
-			"ghij",
-			"cdef",
-			"ab",
-		}
-
-		actual := make([]string, 0, len(expected))
-
-		for c.Next() {
-			left, right := c.Bounds()
-			segment := alphabet[left:right]
-			actual = append(actual, segment)
-		}
-		c.Reverse()
-		for c.Next() {
-			left, right := c.Bounds()
-			segment := alphabet[left:right]
-			actual = append(actual, segment)
-		}
-
-		assertEqual(t, expected, actual)
-	})
-
-	t.Run("backward then forward", func(t *testing.T) {
-		var c Chain
-		c.SetStop(len(alphabet))
-		c.SetStep(4)
-		c.Reverse()
-
-		expected := []string{
-			"wxyz",
-			"stuv",
-			"opqr",
-			"klmn",
-			"ghij",
-			"cdef",
-			"ab",
-			"abcd",
-			"efgh",
-			"ijkl",
-			"mnop",
-			"qrst",
-			"uvwx",
-			"yz",
-		}
-
-		actual := make([]string, 0, len(expected))
-
-		for c.Next() {
-			left, right := c.Bounds()
-			segment := alphabet[left:right]
-			actual = append(actual, segment)
-		}
-		c.Reverse()
-		for c.Next() {
-			left, right := c.Bounds()
-			segment := alphabet[left:right]
-			actual = append(actual, segment)
-		}
-
-		assertEqual(t, expected, actual)
-	})
+		assertEqual(t, testCase.name, testCase.expected, actual)
+	}
 }
 
-func assertEqual(t *testing.T, expected, actual interface{}) {
+func TestChain_Reset(t *testing.T) {
+	var (
+		stop    = 15
+		step    = 5
+		resetAt = 10
+	)
+	testCases := []struct {
+		name     string
+		loops    []int
+		expected [][]int
+	}{
+		{
+			name:     "forward",
+			loops:    []int{1},
+			expected: [][]int{{0, 5}, {5, 10}, {10, 15}, {0, 5}, {5, 10}, {10, 15}},
+		},
+		{
+			name:     "backward",
+			loops:    []int{-1},
+			expected: [][]int{{10, 15}, {10, 15}, {5, 10}, {0, 5}},
+		},
+	}
+
+	for _, testCase := range testCases {
+		var c Chain
+		c.SetStop(stop)
+		c.SetStep(step)
+
+		actual := make([][]int, 0, len(testCase.expected))
+
+		var (
+			prevDirection int
+			alreadyReset  bool
+		)
+		for _, direction := range testCase.loops {
+			if direction == -1 || direction == -prevDirection {
+				c.Reverse()
+			}
+			prevDirection = direction
+
+			for c.Next() {
+				left, right := c.Bounds()
+				subInterval := []int{left, right}
+				actual = append(actual, subInterval)
+				if left == resetAt && !alreadyReset {
+					alreadyReset = true
+					c.Reset()
+				}
+			}
+		}
+
+		assertEqual(t, testCase.name, testCase.expected, actual)
+	}
+}
+
+func assertEqual(t *testing.T, name string, expected, actual interface{}) {
 	if !reflect.DeepEqual(expected, actual) {
-		t.Fatalf("expected: %v, actual: %v", expected, actual)
+		t.Fatalf("[%s] expected: %v, actual: %v", name, expected, actual)
 	}
 }
