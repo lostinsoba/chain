@@ -168,22 +168,23 @@ func TestChain_Reset(t *testing.T) {
 	var (
 		stop    = 15
 		step    = 5
-		resetAt = 10
+		resetAt = 5
 	)
 	testCases := []struct {
 		name     string
-		loops    []int
+		start    int
+		loop     int
 		expected [][]int
 	}{
 		{
 			name:     "forward",
-			loops:    []int{1},
-			expected: [][]int{{0, 5}, {5, 10}, {10, 15}, {0, 5}, {5, 10}, {10, 15}},
+			loop:     1,
+			expected: [][]int{{0, 5}, {5, 10}, {0, 5}, {5, 10}, {10, 15}},
 		},
 		{
 			name:     "backward",
-			loops:    []int{-1},
-			expected: [][]int{{10, 15}, {10, 15}, {5, 10}, {0, 5}},
+			loop:     -1,
+			expected: [][]int{{10, 15}, {5, 10}, {10, 15}, {5, 10}, {0, 5}},
 		},
 	}
 
@@ -194,24 +195,20 @@ func TestChain_Reset(t *testing.T) {
 
 		actual := make([][]int, 0, len(testCase.expected))
 
-		var (
-			prevDirection int
-			alreadyReset  bool
-		)
-		for _, direction := range testCase.loops {
-			if direction == -1 || direction == -prevDirection {
-				c.Reverse()
-			}
-			prevDirection = direction
+		if testCase.loop == -1 {
+			c.Reverse()
+		}
 
-			for c.Next() {
-				left, right := c.Bounds()
-				subInterval := []int{left, right}
-				actual = append(actual, subInterval)
-				if left == resetAt && !alreadyReset {
-					alreadyReset = true
-					c.Reset()
-				}
+		var (
+			alreadyReset bool
+		)
+		for c.Next() {
+			left, right := c.Bounds()
+			subInterval := []int{left, right}
+			actual = append(actual, subInterval)
+			if left == resetAt && !alreadyReset {
+				alreadyReset = true
+				c.Reset()
 			}
 		}
 
